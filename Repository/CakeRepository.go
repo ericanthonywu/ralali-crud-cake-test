@@ -58,7 +58,7 @@ func (h *CakeRepositoryHandler) GetCake(pagination uint) (data []Database.Cakes,
 }
 
 func (h *CakeRepositoryHandler) GetCakeById(id uint64) (data Database.Cakes, err error) {
-	if err = h.DB.QueryRow("select id, title, description, rating, image, created_at, COALESCE(updated_at, '') from ralali_crud_cake_test.cakes where id = ?", id).
+	if err = h.DB.QueryRow("select id, title, description, rating, image, created_at, COALESCE(updated_at, '') from ralali_crud_cake_test.cakes where id = ? order by rating, title", id).
 		Scan(
 			&data.Id,
 			&data.Title,

@@ -1,0 +1,1 @@
+migrate -path database/migration/ -database "mysql://root:@tcp(localhost:3306)/ralali_crud_cake_test" -verbose up

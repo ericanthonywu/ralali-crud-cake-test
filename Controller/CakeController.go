@@ -7,6 +7,7 @@ import (
 	"ralali-crud-cake-test/Model"
 	"ralali-crud-cake-test/Model/Database"
 	"ralali-crud-cake-test/Services"
+	"ralali-crud-cake-test/Utils"
 	"strconv"
 )
 
@@ -70,10 +71,15 @@ func (h *CakeControllerHandler) AddCake(c *fiber.Ctx) (err error) {
 	var (
 		serviceErr *Model.ServiceErrorDto
 		request    Model.CakeRequestDto
+		errs       []Model.ValidationError
 	)
 
 	if err = c.BodyParser(&request); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(Model.ErrorResponse(Constant.FailedBindError, err))
+	}
+
+	if errs = Utils.Validate(request); errs != nil {
+		return c.Status(http.StatusBadRequest).JSON(Model.ErrorResponse(Constant.ValidationError, errs))
 	}
 
 	if serviceErr = h.service.AddCake(request); serviceErr != nil {
@@ -88,6 +94,7 @@ func (h *CakeControllerHandler) UpdateCake(c *fiber.Ctx) (err error) {
 		id         int
 		serviceErr *Model.ServiceErrorDto
 		request    Model.CakeRequestDto
+		errs       []Model.ValidationError
 	)
 
 	if id, err = c.ParamsInt("id"); err != nil {
@@ -96,6 +103,10 @@ func (h *CakeControllerHandler) UpdateCake(c *fiber.Ctx) (err error) {
 
 	if err = c.BodyParser(&request); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(Model.ErrorResponse(Constant.FailedBindError, err))
+	}
+
+	if errs = Utils.Validate(request); errs != nil {
+		return c.Status(http.StatusBadRequest).JSON(Model.ErrorResponse(Constant.ValidationError, errs))
 	}
 
 	if serviceErr = h.service.UpdateCake(uint64(id), request); serviceErr != nil {

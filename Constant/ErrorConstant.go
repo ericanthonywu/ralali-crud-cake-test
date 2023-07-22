@@ -1,6 +1,6 @@
 package Constant
 
 const (
-	DatabaseError   = "Database Error"
 	FailedBindError = "Failed to bind request"
+	ValidationError = "Failed to validate request"
 )

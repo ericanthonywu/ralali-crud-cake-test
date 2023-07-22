@@ -3,7 +3,7 @@ FROM golang:latest
 RUN apt-get update
 
 # Set necessary environmet variables needed for our image
-ENV GO111MODULE=on \
+ENV GO111MODULE=auto \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64
@@ -18,6 +18,9 @@ RUN go mod download
 
 # Copy the code into the container
 COPY . .
+
+# Run unit tests before building
+RUN go test -v ./Tests/cake_test.go
 
 # Build the application
 RUN go build -o main main.go

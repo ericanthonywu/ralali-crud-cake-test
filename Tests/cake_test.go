@@ -21,13 +21,14 @@ type MockedRepository struct {
 	mock.Mock
 }
 
+var (
+	db, dbMock, _ = sqlmock.New()
+	repo          = new(MockedRepository)
+	service       = new(MockedService)
+	svc           = Services.CakeServicesControllerProvider(Repository.CakeRepositoryControllerProvider(db))
+)
+
 func TestGetCake(t *testing.T) {
-	repo := new(MockedRepository)
-	service := new(MockedService)
-
-	db, dbMock, _ := sqlmock.New()
-	defer db.Close()
-
 	dbMock.ExpectQuery(regexp.QuoteMeta("select id, title, description, rating, image, created_at, COALESCE(updated_at, '') from cakes where deleted_at IS NULL limit 10 offset ?")).
 		WillReturnRows(
 			sqlmock.NewRows([]string{"id", "title", "description", "rating", "image", "created_at", "updated_at"}).
@@ -47,35 +48,25 @@ func TestGetCake(t *testing.T) {
 		},
 	}, nil)
 
-	Services.CakeServicesControllerProvider(Repository.CakeRepositoryControllerProvider(db)).GetCake(1)
+	svc.GetCake(1)
 
 	service.AssertExpectations(t)
+	defer db.Close()
 }
 
 func TestGetCakeById(t *testing.T) {
-	repo := new(MockedRepository)
-	service := new(MockedService)
-
-	db, dbMock, _ := sqlmock.New()
-	defer db.Close()
-
 	dbMock.ExpectQuery(regexp.QuoteMeta("select id, title, description, rating, image, created_at, COALESCE(updated_at, '') from cakes where id = ?")).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "title", "description", "rating", "imiage", "created_at", "updated_at"}))
 
 	repo.On("GetCakeById", mock.Anything).Return(nil, nil)
 
-	Services.CakeServicesControllerProvider(Repository.CakeRepositoryControllerProvider(db)).GetCakeById(1)
+	svc.GetCakeById(1)
 
 	service.AssertExpectations(t)
+	defer db.Close()
 }
 
 func TestAddCake(t *testing.T) {
-	repo := new(MockedRepository)
-	service := new(MockedService)
-
-	db, dbMock, _ := sqlmock.New()
-	defer db.Close()
-
 	var (
 		title       = "title"
 		description = "description"
@@ -88,7 +79,7 @@ func TestAddCake(t *testing.T) {
 
 	repo.On("AddCake", mock.Anything).Return(nil)
 
-	Services.CakeServicesControllerProvider(Repository.CakeRepositoryControllerProvider(db)).AddCake(Model.CakeRequestDto{
+	svc.AddCake(Model.CakeRequestDto{
 		Title:       title,
 		Description: description,
 		Rating:      rating,
@@ -96,15 +87,10 @@ func TestAddCake(t *testing.T) {
 	})
 
 	service.AssertExpectations(t)
+	defer db.Close()
 }
 
 func TestUpdateCake(t *testing.T) {
-	repo := new(MockedRepository)
-	service := new(MockedService)
-
-	db, dbMock, _ := sqlmock.New()
-	defer db.Close()
-
 	var (
 		title       = "title"
 		description = "description"
@@ -118,7 +104,7 @@ func TestUpdateCake(t *testing.T) {
 
 	repo.On("UpdateCake", mock.Anything).Return(nil)
 
-	Services.CakeServicesControllerProvider(Repository.CakeRepositoryControllerProvider(db)).UpdateCake(id, Model.CakeRequestDto{
+	svc.UpdateCake(id, Model.CakeRequestDto{
 		Title:       title,
 		Description: description,
 		Rating:      rating,
@@ -126,15 +112,10 @@ func TestUpdateCake(t *testing.T) {
 	})
 
 	service.AssertExpectations(t)
+	defer db.Close()
 }
 
 func TestDeleteCake(t *testing.T) {
-	repo := new(MockedRepository)
-	service := new(MockedService)
-
-	db, dbMock, _ := sqlmock.New()
-	defer db.Close()
-
 	var (
 		id = uint64(1)
 	)
@@ -144,7 +125,8 @@ func TestDeleteCake(t *testing.T) {
 
 	repo.On("DeleteCake", mock.Anything).Return(nil)
 
-	Services.CakeServicesControllerProvider(Repository.CakeRepositoryControllerProvider(db)).DeleteCake(id)
+	svc.DeleteCake(id)
 
 	service.AssertExpectations(t)
+	defer db.Close()
 }

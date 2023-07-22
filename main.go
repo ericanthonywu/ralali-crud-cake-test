@@ -17,6 +17,12 @@ import (
 )
 
 func main() {
+	/**
+	TODO:
+	1. Unit tests
+	2. Validator
+	3. Docker & Docker Compose
+	*/
 	app := fiber.New(fiber.Config{
 		Prefork:       true,
 		CaseSensitive: true,

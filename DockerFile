@@ -16,7 +16,6 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 
-
 # Copy the code into the container
 COPY . .
 
@@ -29,14 +28,9 @@ WORKDIR /dist
 # Copy binary from build to main folder
 RUN cp /build/main .
 
-FROM scratch
-COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /dist/main /
+RUN touch .env
 
-COPY ./.env /.env
-ENV TZ=Asia/Jakarta
-ENV MODE=PROD
+EXPOSE 7890
 
 # Run executable
-CMD ["./main"]
+CMD ["sh", "-c", "./main"]

@@ -1,0 +1,8 @@
+# FILES
+.env
+
+# FOLDERS
+.idea
+.vscode
+.fleet
+.air.toml

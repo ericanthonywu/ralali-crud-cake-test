@@ -59,7 +59,7 @@ func (h *CakeServicesHandler) GetCakeById(id uint64) (data Database.Cakes, servi
 		err error
 	)
 
-	if serviceError = h.checkCake(id); err != nil {
+	if serviceError = h.checkCake(id); serviceError != nil {
 		return data, serviceError
 	}
 
@@ -85,7 +85,7 @@ func (h *CakeServicesHandler) UpdateCake(id uint64, data Model.CakeRequestDto) (
 		err error
 	)
 
-	if serviceError = h.checkCake(id); err != nil {
+	if serviceError = h.checkCake(id); serviceError != nil {
 		return serviceError
 	}
 

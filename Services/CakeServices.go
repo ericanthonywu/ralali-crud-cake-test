@@ -99,7 +99,7 @@ func (h *CakeServicesHandler) UpdateCake(id uint64, data Model.CakeRequestDto) (
 func (h *CakeServicesHandler) DeleteCake(id uint64) (serviceError *Model.ServiceErrorDto) {
 	var err error
 
-	if serviceError = h.checkCake(id); err != nil {
+	if serviceError = h.checkCake(id); serviceError != nil {
 		return serviceError
 	}
 
